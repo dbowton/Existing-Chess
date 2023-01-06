@@ -26,6 +26,9 @@ public class Game : MonoBehaviour
     //that Unity can call for you
     public void StartChess(bool regular = true)
     {
+        if (started) return;
+        started = true;
+
         playerWhite = new GameObject[] { null, null, null, null, null, null, null, null,
             Create("white_pawn", 0, 1), Create("white_pawn", 1, 1), Create("white_pawn", 2, 1),
             Create("white_pawn", 3, 1), Create("white_pawn", 4, 1), Create("white_pawn", 5, 1),
@@ -126,22 +129,6 @@ public class Game : MonoBehaviour
 
     public void Update()
     {
-        if (!started)
-        {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                StartChess(true);
-                started = true;
-            }
-            else if(Input.GetKeyDown(KeyCode.P)) 
-            {
-                StartChess(false);
-                started = true;
-            }
-
-            return;
-        }
-
         if (gameOver == true && Input.GetMouseButtonDown(0))
         {
             gameOver = false;
