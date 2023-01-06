@@ -24,20 +24,38 @@ public class Game : MonoBehaviour
 
     //Unity calls this right when the game starts, there are a few built in functions
     //that Unity can call for you
-    public void Start()
+    public void StartChess(bool regular = true)
     {
-        playerWhite = new GameObject[] { Create("white_rook", 0, 0), Create("white_knight", 1, 0),
-            Create("white_bishop", 2, 0), Create("white_queen", 3, 0), Create("white_king", 4, 0),
-            Create("white_bishop", 5, 0), Create("white_knight", 6, 0), Create("white_rook", 7, 0),
+        playerWhite = new GameObject[] { null, null, null, null, null, null, null, null,
             Create("white_pawn", 0, 1), Create("white_pawn", 1, 1), Create("white_pawn", 2, 1),
             Create("white_pawn", 3, 1), Create("white_pawn", 4, 1), Create("white_pawn", 5, 1),
             Create("white_pawn", 6, 1), Create("white_pawn", 7, 1) };
-        playerBlack = new GameObject[] { Create("black_rook", 0, 7), Create("black_knight",1,7),
-            Create("black_bishop",2,7), Create("black_queen",3,7), Create("black_king",4,7),
-            Create("black_bishop",5,7), Create("black_knight",6,7), Create("black_rook",7,7),
+        playerBlack = new GameObject[] { null, null, null, null, null, null, null, null,
             Create("black_pawn", 0, 6), Create("black_pawn", 1, 6), Create("black_pawn", 2, 6),
             Create("black_pawn", 3, 6), Create("black_pawn", 4, 6), Create("black_pawn", 5, 6),
             Create("black_pawn", 6, 6), Create("black_pawn", 7, 6) };
+
+
+        List<string> pieces = new List<string>() {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook" };
+        List<string> newPieces = new List<string>();
+
+        if (regular == false)
+        {
+            while (pieces.Count > 0)
+            {
+                int ranNum = Random.Range(0, pieces.Count);
+                newPieces.Add(pieces[ranNum]);
+                pieces.RemoveAt(ranNum);
+            }
+
+            pieces = newPieces;
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            playerWhite[i] = Create("white_" + pieces[i], i, 0);
+            playerBlack[(regular ? 7 - i : i)] = Create("black_" + pieces[i], (regular ? 7 - i : i), 7);
+        }
 
         //Set all piece positions on the positions board
         for (int i = 0; i < playerBlack.Length; i++)
@@ -104,8 +122,26 @@ public class Game : MonoBehaviour
         }
     }
 
+    bool started = false;
+
     public void Update()
     {
+        if (!started)
+        {
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                StartChess(true);
+                started = true;
+            }
+            else if(Input.GetKeyDown(KeyCode.P)) 
+            {
+                StartChess(false);
+                started = true;
+            }
+
+            return;
+        }
+
         if (gameOver == true && Input.GetMouseButtonDown(0))
         {
             gameOver = false;
