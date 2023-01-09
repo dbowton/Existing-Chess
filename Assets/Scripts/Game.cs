@@ -38,26 +38,36 @@ public class Game : MonoBehaviour
             Create("black_pawn", 3, 6), Create("black_pawn", 4, 6), Create("black_pawn", 5, 6),
             Create("black_pawn", 6, 6), Create("black_pawn", 7, 6) };
 
-
-        List<string> pieces = new List<string>() {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook" };
-        List<string> newPieces = new List<string>();
+        string[] arrPieces = new string[]{ "rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook" };
 
         if (regular == false)
         {
-            while (pieces.Count > 0)
-            {
-                int ranNum = Random.Range(0, pieces.Count);
-                newPieces.Add(pieces[ranNum]);
-                pieces.RemoveAt(ranNum);
-            }
+            arrPieces = new string[8];
 
-            pieces = newPieces;
-        }
+             int kingPos = Random.Range(1, arrPieces.Length - 1);
+
+			arrPieces[kingPos] = "king";
+            arrPieces[GenerateAvailablePos(arrPieces, 0, kingPos)] = "rook";
+            arrPieces[GenerateAvailablePos(arrPieces, kingPos, arrPieces.Length)] = "rook";
+
+            int bishop1pos = GenerateAvailablePos(arrPieces);
+            arrPieces[bishop1pos] = "bishop";
+
+            int bishop2pos = GenerateAvailablePos(arrPieces);
+
+            while((bishop1pos % 2 == 0 && bishop2pos % 2 == 0) || (bishop1pos % 2 == 1 && bishop2pos % 2 == 1)) bishop2pos = GenerateAvailablePos(arrPieces);
+
+            arrPieces[bishop2pos] = "bishop";
+
+            arrPieces[GenerateAvailablePos(arrPieces)] = "queen";
+            arrPieces[GenerateAvailablePos(arrPieces)] = "knight";
+            arrPieces[GenerateAvailablePos(arrPieces)] = "knight";
+		}
 
         for (int i = 0; i < 8; i++)
         {
-            playerWhite[i] = Create("white_" + pieces[i], i, 0);
-            playerBlack[(regular ? 7 - i : i)] = Create("black_" + pieces[i], (regular ? 7 - i : i), 7);
+            playerWhite[i] = Create("white_" + arrPieces[i], i, 0);
+            playerBlack[(regular ? 7 - i : i)] = Create("black_" + arrPieces[i], (regular ? 7 - i : i), 7);
         }
 
         //Set all piece positions on the positions board
@@ -65,6 +75,18 @@ public class Game : MonoBehaviour
         {
             SetPosition(playerBlack[i]);
             SetPosition(playerWhite[i]);
+        }
+    }
+
+    public int GenerateAvailablePos(string[] strings, int min = -1, int max = -1)
+    {
+        if (min == -1) min = 0;
+        if (max == -1) max = strings.Length;
+
+        while (true)
+        {
+            int ranNum = Random.Range(min, max);
+            if (strings[ranNum] == null || string.IsNullOrEmpty(strings[ranNum])) return ranNum;
         }
     }
 
