@@ -38,31 +38,7 @@ public class Game : MonoBehaviour
             Create("black_pawn", 3, 6), Create("black_pawn", 4, 6), Create("black_pawn", 5, 6),
             Create("black_pawn", 6, 6), Create("black_pawn", 7, 6) };
 
-        string[] arrPieces = new string[]{ "rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook" };
-
-        if (regular == false)
-        {
-            arrPieces = new string[8];
-
-             int kingPos = Random.Range(1, arrPieces.Length - 1);
-
-			arrPieces[kingPos] = "king";
-            arrPieces[GenerateAvailablePos(arrPieces, 0, kingPos)] = "rook";
-            arrPieces[GenerateAvailablePos(arrPieces, kingPos, arrPieces.Length)] = "rook";
-
-            int bishop1pos = GenerateAvailablePos(arrPieces);
-            arrPieces[bishop1pos] = "bishop";
-
-            int bishop2pos = GenerateAvailablePos(arrPieces);
-
-            while((bishop1pos % 2 == 0 && bishop2pos % 2 == 0) || (bishop1pos % 2 == 1 && bishop2pos % 2 == 1)) bishop2pos = GenerateAvailablePos(arrPieces);
-
-            arrPieces[bishop2pos] = "bishop";
-
-            arrPieces[GenerateAvailablePos(arrPieces)] = "queen";
-            arrPieces[GenerateAvailablePos(arrPieces)] = "knight";
-            arrPieces[GenerateAvailablePos(arrPieces)] = "knight";
-		}
+        string[] arrPieces = GenerateBoard(regular);
 
         for (int i = 0; i < 8; i++)
         {
@@ -78,7 +54,38 @@ public class Game : MonoBehaviour
         }
     }
 
-    public int GenerateAvailablePos(string[] strings, int min = -1, int max = -1)
+    public static string[] GenerateBoard(bool regularChess = true)
+    {
+		string[] arrPieces = new string[] { "rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook" };
+
+		if (regularChess == false)
+		{
+			arrPieces = new string[8];
+
+			int kingPos = Random.Range(1, arrPieces.Length - 1);
+
+			arrPieces[kingPos] = "king";
+			arrPieces[GenerateAvailablePos(arrPieces, 0, kingPos)] = "rook";
+			arrPieces[GenerateAvailablePos(arrPieces, kingPos, arrPieces.Length)] = "rook";
+
+			int bishop1pos = GenerateAvailablePos(arrPieces);
+			arrPieces[bishop1pos] = "bishop";
+
+			int bishop2pos = GenerateAvailablePos(arrPieces);
+
+			while ((bishop1pos % 2 == 0 && bishop2pos % 2 == 0) || (bishop1pos % 2 == 1 && bishop2pos % 2 == 1)) bishop2pos = GenerateAvailablePos(arrPieces);
+
+			arrPieces[bishop2pos] = "bishop";
+
+			arrPieces[GenerateAvailablePos(arrPieces)] = "queen";
+			arrPieces[GenerateAvailablePos(arrPieces)] = "knight";
+			arrPieces[GenerateAvailablePos(arrPieces)] = "knight";
+		}
+
+        return arrPieces;
+	}
+
+    public static int GenerateAvailablePos(string[] strings, int min = -1, int max = -1)
     {
         if (min == -1) min = 0;
         if (max == -1) max = strings.Length;
